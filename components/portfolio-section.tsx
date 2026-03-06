@@ -36,7 +36,7 @@ const projects: {
     category: "Crypto, Algorithm",
     description:
       "Institutional-grade automated trading system processing millions in daily volume across multiple exchanges with sub-millisecond execution.",
-    url: "#",
+    url: "#contact",
     tags: ["Python", "ML", "Trading"],
     Animation: TradingBotAnimation,
   },
