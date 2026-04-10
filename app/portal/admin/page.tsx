@@ -345,17 +345,17 @@ export default function AdminPanel() {
           const pLeads = Number(platform.leads) || 0
           leads += pLeads
           workerPlatformTotals[platformKey].leads += pLeads
-          ;["account1", "account2", "account3"].forEach((acc) => {
-            const acct = (platform as Record<string, PlatformAccount>)[acc]
-            if (acct) {
-              const fb = Number(acct.followBacks) || 0
-              const l = Number(acct.leads) || 0
-              followBacks += fb
-              leads += l
-              workerPlatformTotals[platformKey].followBacks += fb
-              workerPlatformTotals[platformKey].leads += l
-            }
-          })
+            ;["account1", "account2", "account3"].forEach((acc) => {
+              const acct = (platform as Record<string, PlatformAccount>)[acc]
+              if (acct) {
+                const fb = Number(acct.followBacks) || 0
+                const l = Number(acct.leads) || 0
+                followBacks += fb
+                leads += l
+                workerPlatformTotals[platformKey].followBacks += fb
+                workerPlatformTotals[platformKey].leads += l
+              }
+            })
         })
       })
 
@@ -387,13 +387,13 @@ export default function AdminPanel() {
         if (!platform) return
         const topLevelLeads = Number(platform.leads) || 0
         totalLeads += topLevelLeads
-        ;["account1", "account2", "account3"].forEach((acc) => {
-          const acct = (platform as Record<string, PlatformAccount>)[acc]
-          if (acct) {
-            totalFollowBacks += Number(acct.followBacks) || 0
-            totalLeads += Number(acct.leads) || 0
-          }
-        })
+          ;["account1", "account2", "account3"].forEach((acc) => {
+            const acct = (platform as Record<string, PlatformAccount>)[acc]
+            if (acct) {
+              totalFollowBacks += Number(acct.followBacks) || 0
+              totalLeads += Number(acct.leads) || 0
+            }
+          })
       })
     })
     return { totalFollowBacks, totalLeads }
@@ -494,17 +494,15 @@ export default function AdminPanel() {
           <div className="flex bg-[#0c0c14] border border-[#1a1a2e] rounded-xl p-1 self-start sm:self-auto">
             <button
               onClick={() => setAdminTab("workers")}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-                adminTab === "workers" ? "bg-[#1a1a2e] text-[#e8e8ef]" : "text-[#7a7a8e] hover:text-[#e8e8ef]"
-              }`}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${adminTab === "workers" ? "bg-[#1a1a2e] text-[#e8e8ef]" : "text-[#7a7a8e] hover:text-[#e8e8ef]"
+                }`}
             >
               Workers
             </button>
             <button
               onClick={() => setAdminTab("reports")}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2 ${
-                adminTab === "reports" ? "bg-[#1a1a2e] text-[#e8e8ef]" : "text-[#7a7a8e] hover:text-[#e8e8ef]"
-              }`}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2 ${adminTab === "reports" ? "bg-[#1a1a2e] text-[#e8e8ef]" : "text-[#7a7a8e] hover:text-[#e8e8ef]"
+                }`}
             >
               Reports
               {flatReports.length > 0 && (
@@ -518,374 +516,371 @@ export default function AdminPanel() {
 
         {adminTab === "workers" && (<>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-          <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-4">
-            <p className="text-[#7a7a8e] text-xs uppercase tracking-widest mb-1">Workers</p>
-            <p className="text-2xl font-bold text-[#e8e8ef]">{approvedWorkers.length}</p>
-          </div>
-          <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-4">
-            <p className="text-[#7a7a8e] text-xs uppercase tracking-widest mb-1">Pending Users</p>
-            <p className="text-2xl font-bold text-orange-400">{pendingWorkers.length}</p>
-          </div>
-          <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-4">
-            <p className="text-[#7a7a8e] text-xs uppercase tracking-widest mb-1">Pending Claims</p>
-            <p className="text-2xl font-bold text-yellow-400">{totalPending}</p>
-          </div>
-          <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-4">
-            <p className="text-[#7a7a8e] text-xs uppercase tracking-widest mb-1">Approved</p>
-            <p className="text-2xl font-bold text-[#00e5ff]">{totalApproved}</p>
-          </div>
-          <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-4">
-            <p className="text-[#7a7a8e] text-xs uppercase tracking-widest mb-1">Total Bonuses Paid</p>
-            <p className="text-2xl font-bold text-[#00e5ff]">${totalBonusesPaid}</p>
-          </div>
-        </div>
-
-        {/* Pending User Approvals Alert */}
-        {pendingWorkers.length > 0 && (
-          <div className="bg-orange-500/10 border border-orange-500/30 rounded-2xl px-6 py-4">
-            <div className="flex items-start gap-3 mb-4">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
-              </svg>
-              <div>
-                <p className="text-orange-400 text-sm font-medium">Pending User Registrations</p>
-                <p className="text-[#7a7a8e] text-xs mt-0.5">{pendingWorkers.length} user(s) waiting for approval</p>
-              </div>
+          {/* Stats */}
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+            <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-4">
+              <p className="text-[#7a7a8e] text-xs uppercase tracking-widest mb-1">Workers</p>
+              <p className="text-2xl font-bold text-[#e8e8ef]">{approvedWorkers.length}</p>
             </div>
-            <div className="flex flex-col gap-3">
-              {pendingWorkers.map((worker) => {
-                const salary = pendingSalaries[worker.username] ?? worker.data.baseSalary ?? 200
-                return (
-                  <div
-                    key={worker.username}
-                    className="bg-[#0c0c14] border border-[#1a1a2e] rounded-xl p-4"
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 text-sm font-bold">
-                          {(worker.data.displayName || worker.username)[0].toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="text-[#e8e8ef] text-sm font-medium">{worker.data.displayName}</p>
-                          <p className="text-[#7a7a8e] text-xs">@{worker.username}</p>
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <span className="text-[#7a7a8e] text-xs">
-                          {worker.data.createdAt ? new Date(worker.data.createdAt).toLocaleDateString() : ""}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <label className="text-[#7a7a8e] text-xs whitespace-nowrap">Base Salary:</label>
-                          <div className="relative">
-                            <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#7a7a8e] text-xs">$</span>
-                            <input
-                              type="number"
-                              value={salary}
-                              onChange={(e) => setPendingSalaries((prev) => ({ ...prev, [worker.username]: Number(e.target.value) }))}
-                              onClick={(e) => e.stopPropagation()}
-                              className="w-20 bg-[#12121c] border border-[#1a1a2e] rounded-lg pl-6 pr-2 py-1.5 text-[#e8e8ef] text-xs outline-none focus:border-[#00e5ff] transition-all"
-                              min={0}
-                            />
+            <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-4">
+              <p className="text-[#7a7a8e] text-xs uppercase tracking-widest mb-1">Pending Users</p>
+              <p className="text-2xl font-bold text-orange-400">{pendingWorkers.length}</p>
+            </div>
+            <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-4">
+              <p className="text-[#7a7a8e] text-xs uppercase tracking-widest mb-1">Pending Claims</p>
+              <p className="text-2xl font-bold text-yellow-400">{totalPending}</p>
+            </div>
+            <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-4">
+              <p className="text-[#7a7a8e] text-xs uppercase tracking-widest mb-1">Approved</p>
+              <p className="text-2xl font-bold text-[#00e5ff]">{totalApproved}</p>
+            </div>
+            <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-4">
+              <p className="text-[#7a7a8e] text-xs uppercase tracking-widest mb-1">Total Bonuses Paid</p>
+              <p className="text-2xl font-bold text-[#00e5ff]">${totalBonusesPaid}</p>
+            </div>
+          </div>
+
+          {/* Pending User Approvals Alert */}
+          {pendingWorkers.length > 0 && (
+            <div className="bg-orange-500/10 border border-orange-500/30 rounded-2xl px-6 py-4">
+              <div className="flex items-start gap-3 mb-4">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <div>
+                  <p className="text-orange-400 text-sm font-medium">Pending User Registrations</p>
+                  <p className="text-[#7a7a8e] text-xs mt-0.5">{pendingWorkers.length} user(s) waiting for approval</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3">
+                {pendingWorkers.map((worker) => {
+                  const salary = pendingSalaries[worker.username] ?? worker.data.baseSalary ?? 200
+                  return (
+                    <div
+                      key={worker.username}
+                      className="bg-[#0c0c14] border border-[#1a1a2e] rounded-xl p-4"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 text-sm font-bold">
+                            {(worker.data.displayName || worker.username)[0].toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="text-[#e8e8ef] text-sm font-medium">{worker.data.displayName}</p>
+                            <p className="text-[#7a7a8e] text-xs">@{worker.username}</p>
                           </div>
                         </div>
-                        <button
-                          onClick={() => approveWorker(worker.username, salary)}
-                          className="bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 text-[#00e5ff] border border-[#00e5ff]/30 rounded-lg px-4 py-1.5 text-xs font-medium transition-all"
-                        >
-                          Approve
-                        </button>
-                        <button
-                          onClick={() => rejectWorker(worker.username)}
-                          className="bg-[#e63946]/10 hover:bg-[#e63946]/20 text-[#e63946] border border-[#e63946]/30 rounded-lg px-4 py-1.5 text-xs font-medium transition-all"
-                        >
-                          Reject
-                        </button>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <span className="text-[#7a7a8e] text-xs">
+                            {worker.data.createdAt ? new Date(worker.data.createdAt).toLocaleDateString() : ""}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <label className="text-[#7a7a8e] text-xs whitespace-nowrap">Base Salary:</label>
+                            <div className="relative">
+                              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#7a7a8e] text-xs">$</span>
+                              <input
+                                type="number"
+                                value={salary}
+                                onChange={(e) => setPendingSalaries((prev) => ({ ...prev, [worker.username]: Number(e.target.value) }))}
+                                onClick={(e) => e.stopPropagation()}
+                                className="w-20 bg-[#12121c] border border-[#1a1a2e] rounded-lg pl-6 pr-2 py-1.5 text-[#e8e8ef] text-xs outline-none focus:border-[#00e5ff] transition-all"
+                                min={0}
+                              />
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => approveWorker(worker.username, salary)}
+                            className="bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 text-[#00e5ff] border border-[#00e5ff]/30 rounded-lg px-4 py-1.5 text-xs font-medium transition-all"
+                          >
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => rejectWorker(worker.username)}
+                            className="bg-[#e63946]/10 hover:bg-[#e63946]/20 text-[#e63946] border border-[#e63946]/30 rounded-lg px-4 py-1.5 text-xs font-medium transition-all"
+                          >
+                            Reject
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Add Worker */}
-        <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-6">
-          <h2 className="text-[#e8e8ef] font-semibold text-base mb-4">Register New Worker (Admin)</h2>
-          <p className="text-[#7a7a8e] text-xs mb-4">Workers added here are auto-approved. They will need to set their password on first login.</p>
-          <form onSubmit={addWorker} className="flex flex-col sm:flex-row gap-4">
-            <div className="flex flex-col gap-1 flex-1">
-              <label className="text-[#7a7a8e] text-xs">Discord Username</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7a7a8e] text-sm">@</span>
-                <input
-                  type="text"
-                  value={newUsername}
-                  onChange={(e) => setNewUsername(e.target.value)}
-                  placeholder="discordusername"
-                  className="w-full bg-[#12121c] border border-[#1a1a2e] rounded-xl pl-7 pr-4 py-3 text-[#e8e8ef] text-sm placeholder:text-[#3a3a5e] outline-none focus:border-[#00e5ff] transition-all"
-                />
+                  )
+                })}
               </div>
             </div>
-            <div className="flex flex-col gap-1 flex-1">
-              <label className="text-[#7a7a8e] text-xs">Display Name</label>
-              <input
-                type="text"
-                value={newDisplayName}
-                onChange={(e) => setNewDisplayName(e.target.value)}
-                placeholder="Full Name"
-                className="bg-[#12121c] border border-[#1a1a2e] rounded-xl px-4 py-3 text-[#e8e8ef] text-sm placeholder:text-[#3a3a5e] outline-none focus:border-[#00e5ff] transition-all"
-              />
-            </div>
-            <div className="flex flex-col gap-1 justify-end">
-              <label className="text-[#7a7a8e] text-xs opacity-0 select-none">Add</label>
-              <button
-                type="submit"
-                className="bg-[#00e5ff] hover:bg-[#00c8e0] text-[#050508] font-semibold rounded-xl px-6 py-3 text-sm transition-all whitespace-nowrap"
-              >
-                Add Worker
-              </button>
-            </div>
-          </form>
-          {addError && <p className="text-[#e63946] text-sm mt-3">{addError}</p>}
-          {addSuccess && <p className="text-[#00e5ff] text-sm mt-3">Worker registered successfully.</p>}
-        </div>
+          )}
 
-        {/* Workers list */}
-        <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[#e8e8ef] font-semibold text-base">Workers</h2>
-            <div className="flex bg-[#12121c] rounded-lg p-1">
-              <button
-                onClick={() => setWorkerTab("approved")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                  workerTab === "approved"
-                    ? "bg-[#0c0c14] text-[#e8e8ef]"
-                    : "text-[#7a7a8e] hover:text-[#e8e8ef]"
-                }`}
-              >
-                Approved ({approvedWorkers.length})
-              </button>
-              <button
-                onClick={() => setWorkerTab("pending")}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                  workerTab === "pending"
-                    ? "bg-[#0c0c14] text-[#e8e8ef]"
-                    : "text-[#7a7a8e] hover:text-[#e8e8ef]"
-                }`}
-              >
-                Pending ({pendingWorkers.length})
-              </button>
-            </div>
+          {/* Add Worker */}
+          <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-6">
+            <h2 className="text-[#e8e8ef] font-semibold text-base mb-4">Register New Worker (Admin)</h2>
+            <p className="text-[#7a7a8e] text-xs mb-4">Workers added here are auto-approved. They will need to set their password on first login.</p>
+            <form onSubmit={addWorker} className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-[#7a7a8e] text-xs">Discord Username</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7a7a8e] text-sm">@</span>
+                  <input
+                    type="text"
+                    value={newUsername}
+                    onChange={(e) => setNewUsername(e.target.value)}
+                    placeholder="discordusername"
+                    className="w-full bg-[#12121c] border border-[#1a1a2e] rounded-xl pl-7 pr-4 py-3 text-[#e8e8ef] text-sm placeholder:text-[#3a3a5e] outline-none focus:border-[#00e5ff] transition-all"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-[#7a7a8e] text-xs">Display Name</label>
+                <input
+                  type="text"
+                  value={newDisplayName}
+                  onChange={(e) => setNewDisplayName(e.target.value)}
+                  placeholder="Full Name"
+                  className="bg-[#12121c] border border-[#1a1a2e] rounded-xl px-4 py-3 text-[#e8e8ef] text-sm placeholder:text-[#3a3a5e] outline-none focus:border-[#00e5ff] transition-all"
+                />
+              </div>
+              <div className="flex flex-col gap-1 justify-end">
+                <label className="text-[#7a7a8e] text-xs opacity-0 select-none">Add</label>
+                <button
+                  type="submit"
+                  className="bg-[#00e5ff] hover:bg-[#00c8e0] text-[#050508] font-semibold rounded-xl px-6 py-3 text-sm transition-all whitespace-nowrap"
+                >
+                  Add Worker
+                </button>
+              </div>
+            </form>
+            {addError && <p className="text-[#e63946] text-sm mt-3">{addError}</p>}
+            {addSuccess && <p className="text-[#00e5ff] text-sm mt-3">Worker registered successfully.</p>}
           </div>
 
-          {loading ? (
-            <div className="flex items-center gap-2 py-4">
-              <div className="w-5 h-5 border-2 border-[#00e5ff] border-t-transparent rounded-full animate-spin" />
-              <p className="text-[#7a7a8e] text-sm">Loading...</p>
+          {/* Workers list */}
+          <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-[#e8e8ef] font-semibold text-base">Workers</h2>
+              <div className="flex bg-[#12121c] rounded-lg p-1">
+                <button
+                  onClick={() => setWorkerTab("approved")}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${workerTab === "approved"
+                    ? "bg-[#0c0c14] text-[#e8e8ef]"
+                    : "text-[#7a7a8e] hover:text-[#e8e8ef]"
+                    }`}
+                >
+                  Approved ({approvedWorkers.length})
+                </button>
+                <button
+                  onClick={() => setWorkerTab("pending")}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${workerTab === "pending"
+                    ? "bg-[#0c0c14] text-[#e8e8ef]"
+                    : "text-[#7a7a8e] hover:text-[#e8e8ef]"
+                    }`}
+                >
+                  Pending ({pendingWorkers.length})
+                </button>
+              </div>
             </div>
-          ) : (workerTab === "approved" ? approvedWorkers : pendingWorkers).length === 0 ? (
-            <p className="text-[#7a7a8e] text-sm py-4">
-              {workerTab === "approved" ? "No approved workers yet." : "No pending registrations."}
-            </p>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {(workerTab === "approved" ? approvedWorkers : pendingWorkers).map((worker) => {
-                const pendingCount = worker.claims.filter((c) => c.status === "pending").length
-                const isSelected = selectedWorker === worker.username
-                const isPendingUser = worker.data.status === "pending"
-                return (
-                  <div
-                    key={worker.username}
-                    className={`border rounded-xl p-4 cursor-pointer transition-all ${isSelected ? "border-[#00e5ff]/40 bg-[#00e5ff]/5" : "border-[#1a1a2e] bg-[#12121c] hover:border-[#2a2a3e]"}`}
-                    onClick={() => setSelectedWorker(isSelected ? null : worker.username)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${
-                          isPendingUser 
-                            ? "bg-orange-500/10 border border-orange-500/20 text-orange-400" 
+
+            {loading ? (
+              <div className="flex items-center gap-2 py-4">
+                <div className="w-5 h-5 border-2 border-[#00e5ff] border-t-transparent rounded-full animate-spin" />
+                <p className="text-[#7a7a8e] text-sm">Loading...</p>
+              </div>
+            ) : (workerTab === "approved" ? approvedWorkers : pendingWorkers).length === 0 ? (
+              <p className="text-[#7a7a8e] text-sm py-4">
+                {workerTab === "approved" ? "No approved workers yet." : "No pending registrations."}
+              </p>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {(workerTab === "approved" ? approvedWorkers : pendingWorkers).map((worker) => {
+                  const pendingCount = worker.claims.filter((c) => c.status === "pending").length
+                  const isSelected = selectedWorker === worker.username
+                  const isPendingUser = worker.data.status === "pending"
+                  return (
+                    <div
+                      key={worker.username}
+                      className={`border rounded-xl p-4 cursor-pointer transition-all ${isSelected ? "border-[#00e5ff]/40 bg-[#00e5ff]/5" : "border-[#1a1a2e] bg-[#12121c] hover:border-[#2a2a3e]"}`}
+                      onClick={() => setSelectedWorker(isSelected ? null : worker.username)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${isPendingUser
+                            ? "bg-orange-500/10 border border-orange-500/20 text-orange-400"
                             : "bg-[#1a1a2e] text-[#00e5ff]"
-                        }`}>
-                          {(worker.data.displayName || worker.username)[0].toUpperCase()}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <p className="text-[#e8e8ef] text-sm font-medium">{worker.data.displayName}</p>
-                            {isPendingUser && (
-                              <span className="bg-orange-500/10 text-orange-400 border border-orange-500/30 text-xs rounded-full px-2 py-0.5">
-                                Pending
-                              </span>
-                            )}
-                            {!worker.data.passwordHash && !isPendingUser && (
-                              <span className="bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-xs rounded-full px-2 py-0.5">
-                                No Password
-                              </span>
-                            )}
+                            }`}>
+                            {(worker.data.displayName || worker.username)[0].toUpperCase()}
                           </div>
-                          <p className="text-[#7a7a8e] text-xs">@{worker.username}</p>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <p className="text-[#e8e8ef] text-sm font-medium">{worker.data.displayName}</p>
+                              {isPendingUser && (
+                                <span className="bg-orange-500/10 text-orange-400 border border-orange-500/30 text-xs rounded-full px-2 py-0.5">
+                                  Pending
+                                </span>
+                              )}
+                              {!worker.data.passwordHash && !isPendingUser && (
+                                <span className="bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-xs rounded-full px-2 py-0.5">
+                                  No Password
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[#7a7a8e] text-xs">@{worker.username}</p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        {pendingCount > 0 && (
-                          <span className="bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-xs rounded-full px-2 py-0.5">
-                            {pendingCount} pending
-                          </span>
-                        )}
-                        {!isPendingUser && (
-                          <span className="text-[#00e5ff] text-sm font-bold">
-                            ${(worker.data.baseSalary ?? 200) + (worker.data.approvedBonuses ?? 0)}
-                          </span>
-                        )}
-                        {isPendingUser ? (
-                          <div className="flex gap-2">
+                        <div className="flex items-center gap-3">
+                          {pendingCount > 0 && (
+                            <span className="bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-xs rounded-full px-2 py-0.5">
+                              {pendingCount} pending
+                            </span>
+                          )}
+                          {!isPendingUser && (
+                            <span className="text-[#00e5ff] text-sm font-bold">
+                              ${(worker.data.baseSalary ?? 200) + (worker.data.approvedBonuses ?? 0)}
+                            </span>
+                          )}
+                          {isPendingUser ? (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={(e) => { e.stopPropagation(); approveWorker(worker.username, worker.data.baseSalary ?? 200) }}
+                                className="bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 text-[#00e5ff] border border-[#00e5ff]/30 rounded-lg px-3 py-1.5 text-xs font-medium transition-all"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={(e) => { e.stopPropagation(); rejectWorker(worker.username) }}
+                                className="text-[#e63946] hover:text-red-400 border border-[#e63946]/20 rounded-lg p-1.5 transition-colors"
+                              >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <line x1="18" y1="6" x2="6" y2="18" />
+                                  <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                              </button>
+                            </div>
+                          ) : (
                             <button
-                              onClick={(e) => { e.stopPropagation(); approveWorker(worker.username, worker.data.baseSalary ?? 200) }}
-                              className="bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 text-[#00e5ff] border border-[#00e5ff]/30 rounded-lg px-3 py-1.5 text-xs font-medium transition-all"
-                            >
-                              Approve
-                            </button>
-                            <button
-                              onClick={(e) => { e.stopPropagation(); rejectWorker(worker.username) }}
+                              onClick={(e) => { e.stopPropagation(); removeWorker(worker.username) }}
                               className="text-[#e63946] hover:text-red-400 border border-[#e63946]/20 rounded-lg p-1.5 transition-colors"
                             >
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <line x1="18" y1="6" x2="6" y2="18" />
-                                <line x1="6" y1="6" x2="18" y2="18" />
+                                <polyline points="3 6 5 6 21 6" />
+                                <path d="M19 6l-1 14H6L5 6" />
+                                <path d="M10 11v6M14 11v6" />
+                                <path d="M9 6V4h6v2" />
                               </svg>
                             </button>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); removeWorker(worker.username) }}
-                            className="text-[#e63946] hover:text-red-400 border border-[#e63946]/20 rounded-lg p-1.5 transition-colors"
-                          >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="3 6 5 6 21 6" />
-                              <path d="M19 6l-1 14H6L5 6" />
-                              <path d="M10 11v6M14 11v6" />
-                              <path d="M9 6V4h6v2" />
-                            </svg>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Claims detail — shown when worker is selected */}
-                    {isSelected && !isPendingUser && (
-                      <div className="mt-4 flex flex-col gap-3" onClick={(e) => e.stopPropagation()}>
-                        <div className="border-t border-[#1a1a2e] pt-4">
-                          <div className="flex items-center justify-between mb-3">
-                            <p className="text-[#7a7a8e] text-xs uppercase tracking-widest">Bonus Claims</p>
-                            <p className="text-[#7a7a8e] text-xs">
-                              {worker.claims.length} total &middot; {worker.claims.filter(c => c.status === "approved").length} approved
-                            </p>
-                          </div>
-                          {worker.claims.length === 0 ? (
-                            <p className="text-[#7a7a8e] text-sm">No claims submitted yet.</p>
-                          ) : (
-                            <div className="flex flex-col gap-2">
-                              {worker.claims.map((claim) => (
-                                <div
-                                  key={claim.id}
-                                  className="bg-[#0c0c14] border border-[#1a1a2e] rounded-xl p-4 flex flex-col sm:flex-row sm:items-start justify-between gap-3"
-                                >
-                                  <div className="flex flex-col gap-1 min-w-0">
-                                    <div className="flex items-center gap-2 flex-wrap">
-                                      <span className="text-[#e8e8ef] text-sm font-medium">@{claim.profileUsername}</span>
-                                      <span className="text-[#7a7a8e] text-xs border border-[#1a1a2e] rounded-full px-2 py-0.5">{claim.platform}</span>
-                                      <StatusBadge status={claim.status} />
-                                    </div>
-                                    <p className="text-[#7a7a8e] text-xs">
-                                      {claim.milestoneLabel} — <span className="text-[#00e5ff]">${claim.reward}</span>
-                                    </p>
-                                    {claim.description && (
-                                      <ExpandableNote text={claim.description} />
-                                    )}
-                                    <p className="text-[#3a3a5e] text-xs">{new Date(claim.submittedAt).toLocaleString()}</p>
-                                    {/* Screenshots */}
-                                    {claim.screenshots && claim.screenshots.length > 0 && (
-                                      <div className="flex items-center gap-2 mt-2">
-                                        <button
-                                          onClick={() => {
-                                            setViewingScreenshots(claim.screenshots!)
-                                            setCurrentScreenshotIdx(0)
-                                          }}
-                                          className="flex items-center gap-1.5 bg-[#12121c] hover:bg-[#1a1a2e] border border-[#1a1a2e] rounded-lg px-2.5 py-1.5 text-xs text-[#7a7a8e] hover:text-[#e8e8ef] transition-all"
-                                        >
-                                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                                            <circle cx="8.5" cy="8.5" r="1.5" />
-                                            <polyline points="21 15 16 10 5 21" />
-                                          </svg>
-                                          {claim.screenshots.length} screenshot{claim.screenshots.length > 1 ? 's' : ''}
-                                        </button>
-                                        <div className="flex -space-x-2">
-                                          {claim.screenshots.slice(0, 5).map((pathname, idx) => (
-                                            <div
-                                              key={idx}
-                                              className="w-8 h-8 rounded-md overflow-hidden border-2 border-[#0c0c14] cursor-pointer hover:z-10 transition-transform hover:scale-110"
-                                              onClick={() => {
-                                                setViewingScreenshots(claim.screenshots!)
-                                                setCurrentScreenshotIdx(idx)
-                                              }}
-                                            >
-                                              <img src={`/api/view-screenshot?pathname=${encodeURIComponent(pathname)}`} alt="" className="w-full h-full object-cover" />
-                                            </div>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div className="flex gap-2 shrink-0">
-                                    {claim.status === "pending" && (
-                                      <>
-                                        <button
-                                          onClick={() => updateClaimStatus(worker.username, claim.id, "approved", claim.reward, claim.status)}
-                                          className="bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 text-[#00e5ff] border border-[#00e5ff]/30 rounded-lg px-3 py-1.5 text-xs font-medium transition-all"
-                                        >
-                                          Approve
-                                        </button>
-                                        <button
-                                          onClick={() => updateClaimStatus(worker.username, claim.id, "rejected", claim.reward, claim.status)}
-                                          className="bg-[#e63946]/10 hover:bg-[#e63946]/20 text-[#e63946] border border-[#e63946]/30 rounded-lg px-3 py-1.5 text-xs font-medium transition-all"
-                                        >
-                                          Reject
-                                        </button>
-                                      </>
-                                    )}
-                                    {claim.status !== "pending" && (
-                                      <button
-                                        onClick={() => updateClaimStatus(
-                                          worker.username,
-                                          claim.id,
-                                          claim.status === "approved" ? "rejected" : "approved",
-                                          claim.reward,
-                                          claim.status
-                                        )}
-                                        className="text-[#7a7a8e] hover:text-[#e8e8ef] border border-[#1a1a2e] rounded-lg px-3 py-1.5 text-xs transition-all"
-                                      >
-                                        Undo
-                                      </button>
-                                    )}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
                           )}
                         </div>
                       </div>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          )}
-        </div>
+
+                      {/* Claims detail — shown when worker is selected */}
+                      {isSelected && !isPendingUser && (
+                        <div className="mt-4 flex flex-col gap-3" onClick={(e) => e.stopPropagation()}>
+                          <div className="border-t border-[#1a1a2e] pt-4">
+                            <div className="flex items-center justify-between mb-3">
+                              <p className="text-[#7a7a8e] text-xs uppercase tracking-widest">Bonus Claims</p>
+                              <p className="text-[#7a7a8e] text-xs">
+                                {worker.claims.length} total &middot; {worker.claims.filter(c => c.status === "approved").length} approved
+                              </p>
+                            </div>
+                            {worker.claims.length === 0 ? (
+                              <p className="text-[#7a7a8e] text-sm">No claims submitted yet.</p>
+                            ) : (
+                              <div className="flex flex-col gap-2">
+                                {worker.claims.map((claim) => (
+                                  <div
+                                    key={claim.id}
+                                    className="bg-[#0c0c14] border border-[#1a1a2e] rounded-xl p-4 flex flex-col sm:flex-row sm:items-start justify-between gap-3"
+                                  >
+                                    <div className="flex flex-col gap-1 min-w-0">
+                                      <div className="flex items-center gap-2 flex-wrap">
+                                        <span className="text-[#e8e8ef] text-sm font-medium">@{claim.profileUsername}</span>
+                                        <span className="text-[#7a7a8e] text-xs border border-[#1a1a2e] rounded-full px-2 py-0.5">{claim.platform}</span>
+                                        <StatusBadge status={claim.status} />
+                                      </div>
+                                      <p className="text-[#7a7a8e] text-xs">
+                                        {claim.milestoneLabel} — <span className="text-[#00e5ff]">${claim.reward}</span>
+                                      </p>
+                                      {claim.description && (
+                                        <ExpandableNote text={claim.description} />
+                                      )}
+                                      <p className="text-[#3a3a5e] text-xs">{new Date(claim.submittedAt).toLocaleString()}</p>
+                                      {/* Screenshots */}
+                                      {claim.screenshots && claim.screenshots.length > 0 && (
+                                        <div className="flex items-center gap-2 mt-2">
+                                          <button
+                                            onClick={() => {
+                                              setViewingScreenshots(claim.screenshots!)
+                                              setCurrentScreenshotIdx(0)
+                                            }}
+                                            className="flex items-center gap-1.5 bg-[#12121c] hover:bg-[#1a1a2e] border border-[#1a1a2e] rounded-lg px-2.5 py-1.5 text-xs text-[#7a7a8e] hover:text-[#e8e8ef] transition-all"
+                                          >
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                                              <rect x="3" y="3" width="18" height="18" rx="2" />
+                                              <circle cx="8.5" cy="8.5" r="1.5" />
+                                              <polyline points="21 15 16 10 5 21" />
+                                            </svg>
+                                            {claim.screenshots.length} screenshot{claim.screenshots.length > 1 ? 's' : ''}
+                                          </button>
+                                          <div className="flex -space-x-2">
+                                            {claim.screenshots.slice(0, 5).map((pathname, idx) => (
+                                              <div
+                                                key={idx}
+                                                className="w-8 h-8 rounded-md overflow-hidden border-2 border-[#0c0c14] cursor-pointer hover:z-10 transition-transform hover:scale-110"
+                                                onClick={() => {
+                                                  setViewingScreenshots(claim.screenshots!)
+                                                  setCurrentScreenshotIdx(idx)
+                                                }}
+                                              >
+                                                <img src={`/api/view-screenshot?pathname=${encodeURIComponent(pathname)}`} alt="" className="w-full h-full object-cover" />
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div className="flex gap-2 shrink-0">
+                                      {claim.status === "pending" && (
+                                        <>
+                                          <button
+                                            onClick={() => updateClaimStatus(worker.username, claim.id, "approved", claim.reward, claim.status)}
+                                            className="bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 text-[#00e5ff] border border-[#00e5ff]/30 rounded-lg px-3 py-1.5 text-xs font-medium transition-all"
+                                          >
+                                            Approve
+                                          </button>
+                                          <button
+                                            onClick={() => updateClaimStatus(worker.username, claim.id, "rejected", claim.reward, claim.status)}
+                                            className="bg-[#e63946]/10 hover:bg-[#e63946]/20 text-[#e63946] border border-[#e63946]/30 rounded-lg px-3 py-1.5 text-xs font-medium transition-all"
+                                          >
+                                            Reject
+                                          </button>
+                                        </>
+                                      )}
+                                      {claim.status !== "pending" && (
+                                        <button
+                                          onClick={() => updateClaimStatus(
+                                            worker.username,
+                                            claim.id,
+                                            claim.status === "approved" ? "rejected" : "approved",
+                                            claim.reward,
+                                            claim.status
+                                          )}
+                                          className="text-[#7a7a8e] hover:text-[#e8e8ef] border border-[#1a1a2e] rounded-lg px-3 py-1.5 text-xs transition-all"
+                                        >
+                                          Undo
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
 
         </>)}
 
@@ -950,25 +945,22 @@ export default function AdminPanel() {
               <div className="flex bg-[#12121c] border border-[#1a1a2e] rounded-xl p-1 shrink-0">
                 <button
                   onClick={() => setReportsSortBy("newest")}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
-                    reportsSortBy === "newest" ? "bg-[#1a1a2e] text-[#e8e8ef]" : "text-[#7a7a8e] hover:text-[#e8e8ef]"
-                  }`}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${reportsSortBy === "newest" ? "bg-[#1a1a2e] text-[#e8e8ef]" : "text-[#7a7a8e] hover:text-[#e8e8ef]"
+                    }`}
                 >
                   Newest
                 </button>
                 <button
                   onClick={() => setReportsSortBy("count")}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
-                    reportsSortBy === "count" ? "bg-[#1a1a2e] text-[#e8e8ef]" : "text-[#7a7a8e] hover:text-[#e8e8ef]"
-                  }`}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${reportsSortBy === "count" ? "bg-[#1a1a2e] text-[#e8e8ef]" : "text-[#7a7a8e] hover:text-[#e8e8ef]"
+                    }`}
                 >
                   Most Reports
                 </button>
                 <button
                   onClick={() => setReportsSortBy("name")}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
-                    reportsSortBy === "name" ? "bg-[#1a1a2e] text-[#e8e8ef]" : "text-[#7a7a8e] hover:text-[#e8e8ef]"
-                  }`}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${reportsSortBy === "name" ? "bg-[#1a1a2e] text-[#e8e8ef]" : "text-[#7a7a8e] hover:text-[#e8e8ef]"
+                    }`}
                 >
                   A – Z
                 </button>
@@ -1212,17 +1204,17 @@ function DateReportRow({ date, report }: { date: string; report: DailyReport }) 
       const pLeads = Number(platform.leads) || 0
       leads += pLeads
       platformTotals[platformKey].leads += pLeads
-      ;["account1", "account2", "account3"].forEach((acc) => {
-        const acct = (platform as Record<string, PlatformAccount>)[acc]
-        if (acct) {
-          const fb = Number(acct.followBacks) || 0
-          const l = Number(acct.leads) || 0
-          followBacks += fb
-          leads += l
-          platformTotals[platformKey].followBacks += fb
-          platformTotals[platformKey].leads += l
-        }
-      })
+        ;["account1", "account2", "account3"].forEach((acc) => {
+          const acct = (platform as Record<string, PlatformAccount>)[acc]
+          if (acct) {
+            const fb = Number(acct.followBacks) || 0
+            const l = Number(acct.leads) || 0
+            followBacks += fb
+            leads += l
+            platformTotals[platformKey].followBacks += fb
+            platformTotals[platformKey].leads += l
+          }
+        })
     })
     return { totals: { followBacks, leads }, platformTotals, platformKeys }
   }, [report])
