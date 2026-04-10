@@ -488,7 +488,7 @@ export default function AdminPanel() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold text-[#e8e8ef]">Supervisor Dashboard</h1>
-            <p className="text-[#7a7a8e] text-sm mt-1">Manage workers, approve registrations ,submissions, and review bonus claims.</p>
+            <p className="text-[#7a7a8e] text-sm mt-1">Manage workers, approve registrations ,submissions, and review  claims.</p>
           </div>
           {/* Main tab switcher */}
           <div className="flex bg-[#0c0c14] border border-[#1a1a2e] rounded-xl p-1 self-start sm:self-auto">
