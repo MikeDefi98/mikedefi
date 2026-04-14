@@ -74,6 +74,22 @@ interface AllReports {
   [workerUsername: string]: WorkerReports
 }
 
+interface ContactData {
+  createdAt: string
+  details: string
+  platform: string
+  updatedAt: string
+  username: string
+}
+
+interface WorkerContacts {
+  [contactUsername: string]: ContactData
+}
+
+interface AllContacts {
+  [workerUsername: string]: WorkerContacts
+}
+
 export default function AdminPanel() {
   const router = useRouter()
   const [authed, setAuthed] = useState(false)
@@ -94,13 +110,18 @@ export default function AdminPanel() {
   const [selectedWorker, setSelectedWorker] = useState<string | null>(null)
 
   // Main admin panel tab
-  const [adminTab, setAdminTab] = useState<"workers" | "reports">("workers")
+  const [adminTab, setAdminTab] = useState<"workers" | "reports" | "contacts">("workers")
 
   // Tab state for workers view
   const [workerTab, setWorkerTab] = useState<"approved" | "pending">("approved")
 
   // Reports state
   const [allReports, setAllReports] = useState<AllReports>({})
+  // Contacts state
+  const [allContacts, setAllContacts] = useState<AllContacts>({})
+  const [contactsLoading, setContactsLoading] = useState(false)
+  const [contactsSearch, setContactsSearch] = useState("")
+
   const [reportsLoading, setReportsLoading] = useState(false)
   const [reportsSearch, setReportsSearch] = useState("")
   const [reportsSelectedWorker, setReportsSelectedWorker] = useState<string | null>(null)
@@ -193,6 +214,22 @@ export default function AdminPanel() {
         setAllReports({})
       }
       setReportsLoading(false)
+    })
+    return () => unsub()
+  }, [authed])
+
+  // Subscribe to contacts from second Firebase database
+  useEffect(() => {
+    if (!authed) return
+    setContactsLoading(true)
+    const contactsRef = ref(reportsDb, "contacts")
+    const unsub = onValue(contactsRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setAllContacts(snapshot.val() as AllContacts)
+      } else {
+        setAllContacts({})
+      }
+      setContactsLoading(false)
     })
     return () => unsub()
   }, [authed])
@@ -508,6 +545,19 @@ export default function AdminPanel() {
               {flatReports.length > 0 && (
                 <span className="bg-[#00e5ff]/15 text-[#00e5ff] text-xs rounded-full px-1.5 py-0.5 leading-none">
                   {flatReports.length}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setAdminTab("contacts")}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2 ${
+                adminTab === "contacts" ? "bg-[#1a1a2e] text-[#e8e8ef]" : "text-[#7a7a8e] hover:text-[#e8e8ef]"
+              }`}
+            >
+              Contacts
+              {Object.keys(allContacts).length > 0 && (
+                <span className="bg-[#00e5ff]/15 text-[#00e5ff] text-xs rounded-full px-1.5 py-0.5 leading-none">
+                  {Object.keys(allContacts).length}
                 </span>
               )}
             </button>
@@ -997,6 +1047,86 @@ export default function AdminPanel() {
                     workerPlatformTotals={workerPlatformTotals}
                   />
                 ))
+              )}
+            </div>
+          </>
+        )}
+
+        {/* ============ CONTACTS TAB ============ */}
+        {adminTab === "contacts" && (
+          <>
+            {/* Contacts Filters */}
+            <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+              <div className="relative flex-1">
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7a7a8e]" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input
+                  type="text"
+                  value={contactsSearch}
+                  onChange={(e) => setContactsSearch(e.target.value)}
+                  placeholder="Search by worker username..."
+                  className="w-full bg-[#12121c] border border-[#1a1a2e] rounded-xl pl-8 pr-4 py-2.5 text-[#e8e8ef] text-sm placeholder:text-[#3a3a5e] outline-none focus:border-[#00e5ff] transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Contacts List */}
+            <div className="flex flex-col gap-3">
+              {contactsLoading ? (
+                <div className="flex items-center gap-2 py-8 justify-center">
+                  <div className="w-5 h-5 border-2 border-[#00e5ff] border-t-transparent rounded-full animate-spin" />
+                  <p className="text-[#7a7a8e] text-sm">Loading contacts...</p>
+                </div>
+              ) : Object.keys(allContacts).length === 0 ? (
+                <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-8 text-center">
+                  <p className="text-[#7a7a8e] text-sm">No contacts found.</p>
+                </div>
+              ) : (
+                Object.entries(allContacts)
+                  .filter(([workerUsername]) => contactsSearch === "" || workerUsername.toLowerCase().includes(contactsSearch.toLowerCase()))
+                  .map(([workerUsername, workerContacts]) => (
+                    <div key={workerUsername} className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-full bg-[#1a1a2e] flex items-center justify-center text-[#00e5ff] font-bold text-lg">
+                          {workerUsername[0].toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="text-[#e8e8ef] font-semibold text-base">{workerUsername}</p>
+                          <p className="text-[#7a7a8e] text-xs">{Object.keys(workerContacts).length} contacts</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {Object.entries(workerContacts).map(([contactUsername, contact]) => (
+                          <div key={contactUsername} className="bg-[#12121c] border border-[#1a1a2e] hover:border-[#2a2a3e] transition-colors rounded-xl p-4 flex flex-col">
+                            <div className="flex justify-between items-start mb-2">
+                              <div>
+                                <p className="text-[#e8e8ef] font-medium text-sm">@{contact.username}</p>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <span className="text-[10px] uppercase tracking-wider font-semibold border border-[#1a1a2e] bg-[#0c0c14] px-2 py-0.5 rounded-md text-[#00e5ff]">{contact.platform}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-[#7a7a8e] text-xs flex-1">
+                              {contact.details ? (
+                                <p className="mt-2 bg-[#0c0c14] p-3 rounded-lg border border-[#1a1a2e] text-[#b4b4c8] break-words whitespace-pre-wrap">{contact.details}</p>
+                              ) : (
+                                <p className="mt-2 italic">No details provided.</p>
+                              )}
+                            </div>
+                            <div className="flex justify-between items-center mt-4 pt-3 border-t border-[#1a1a2e]">
+                              <span className="text-[#5a5a6e] text-[10px]">
+                                Added: {new Date(contact.createdAt).toLocaleDateString()}
+                              </span>
+                              <span className="text-[#5a5a6e] text-[10px]">
+                                Updated: {new Date(contact.updatedAt).toLocaleDateString()}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))
               )}
             </div>
           </>
