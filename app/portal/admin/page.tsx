@@ -1086,46 +1086,11 @@ export default function AdminPanel() {
                 Object.entries(allContacts)
                   .filter(([workerUsername]) => contactsSearch === "" || workerUsername.toLowerCase().includes(contactsSearch.toLowerCase()))
                   .map(([workerUsername, workerContacts]) => (
-                    <div key={workerUsername} className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 rounded-full bg-[#1a1a2e] flex items-center justify-center text-[#00e5ff] font-bold text-lg">
-                          {workerUsername[0].toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="text-[#e8e8ef] font-semibold text-base">{workerUsername}</p>
-                          <p className="text-[#7a7a8e] text-xs">{Object.keys(workerContacts).length} contacts</p>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {Object.entries(workerContacts).map(([contactUsername, contact]) => (
-                          <div key={contactUsername} className="bg-[#12121c] border border-[#1a1a2e] hover:border-[#2a2a3e] transition-colors rounded-xl p-4 flex flex-col">
-                            <div className="flex justify-between items-start mb-2">
-                              <div>
-                                <p className="text-[#e8e8ef] font-medium text-sm">@{contact.username}</p>
-                                <div className="flex items-center gap-2 mt-1">
-                                  <span className="text-[10px] uppercase tracking-wider font-semibold border border-[#1a1a2e] bg-[#0c0c14] px-2 py-0.5 rounded-md text-[#00e5ff]">{contact.platform}</span>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="text-[#7a7a8e] text-xs flex-1">
-                              {contact.details ? (
-                                <p className="mt-2 bg-[#0c0c14] p-3 rounded-lg border border-[#1a1a2e] text-[#b4b4c8] break-words whitespace-pre-wrap">{contact.details}</p>
-                              ) : (
-                                <p className="mt-2 italic">No details provided.</p>
-                              )}
-                            </div>
-                            <div className="flex justify-between items-center mt-4 pt-3 border-t border-[#1a1a2e]">
-                              <span className="text-[#5a5a6e] text-[10px]">
-                                Added: {new Date(contact.createdAt).toLocaleDateString()}
-                              </span>
-                              <span className="text-[#5a5a6e] text-[10px]">
-                                Updated: {new Date(contact.updatedAt).toLocaleDateString()}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                    <ContactWorkerTree
+                      key={workerUsername}
+                      workerUsername={workerUsername}
+                      workerContacts={workerContacts}
+                    />
                   ))
               )}
             </div>
@@ -1497,4 +1462,83 @@ function PlatformIcon({ platform }: { platform: string }) {
     ),
   }
   return icons[platform] || <span>•</span>
+}
+
+// ========== CONTACT WORKER TREE ==========
+function ContactWorkerTree({
+  workerUsername,
+  workerContacts,
+}: {
+  workerUsername: string
+  workerContacts: WorkerContacts
+}) {
+  const [open, setOpen] = useState(false)
+  const contactEntries = Object.entries(workerContacts)
+
+  return (
+    <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl overflow-hidden transition-all hover:border-[#2a2a3e]">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-5 py-4 text-left gap-4 group hover:bg-[#12121c]/50 transition-colors"
+      >
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            className={`text-[#7a7a8e] shrink-0 mt-0.5 transition-transform ${open ? "rotate-90" : ""}`}
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+          <div className="w-9 h-9 rounded-full bg-[#1a1a2e] flex items-center justify-center text-[#00e5ff] text-sm font-bold shrink-0">
+            {(workerUsername[0] ?? "?").toUpperCase()}
+          </div>
+          <div>
+            <p className="text-[#e8e8ef] font-semibold text-sm">{workerUsername}</p>
+            <p className="text-[#7a7a8e] text-xs mt-0.5 flex items-center gap-1.5">
+              <span>{contactEntries.length} {contactEntries.length === 1 ? "contact" : "contacts"}</span>
+            </p>
+          </div>
+        </div>
+      </button>
+
+      {open && (
+        <div className="border-t border-[#1a1a2e] p-5 bg-[#0a0a12]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {contactEntries.map(([contactUsername, contact]) => (
+              <div key={contactUsername} className="bg-[#12121c] border border-[#1a1a2e] hover:border-[#2a2a3e] transition-colors rounded-xl p-4 flex flex-col">
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <p className="text-[#e8e8ef] font-medium text-sm">@{contact.username}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[10px] uppercase tracking-wider font-semibold border border-[#1a1a2e] bg-[#0c0c14] px-2 py-0.5 rounded-md text-[#00e5ff]">{contact.platform}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-[#7a7a8e] text-xs flex-1">
+                  {contact.details ? (
+                    <p className="mt-2 bg-[#0c0c14] p-3 rounded-lg border border-[#1a1a2e] text-[#b4b4c8] break-words whitespace-pre-wrap">{contact.details}</p>
+                  ) : (
+                    <p className="mt-2 italic">No details provided.</p>
+                  )}
+                </div>
+                <div className="flex justify-between items-center mt-4 pt-3 border-t border-[#1a1a2e]">
+                  <span className="text-[#5a5a6e] text-[10px]">
+                    Added: {new Date(contact.createdAt).toLocaleDateString()}
+                  </span>
+                  <span className="text-[#5a5a6e] text-[10px]">
+                    Updated: {new Date(contact.updatedAt).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
 }
