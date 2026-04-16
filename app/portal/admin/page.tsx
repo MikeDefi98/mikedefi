@@ -115,6 +115,9 @@ export default function AdminPanel() {
   // Tab state for workers view
   const [workerTab, setWorkerTab] = useState<"approved" | "pending">("approved")
 
+  // Milestone overview filter
+  const [milestoneFilter, setMilestoneFilter] = useState<string | null>(null)
+
   // Reports state
   const [allReports, setAllReports] = useState<AllReports>({})
   // Contacts state
@@ -928,6 +931,120 @@ export default function AdminPanel() {
                     </div>
                   )
                 })}
+              </div>
+            )}
+          </div>
+
+          {/* ============ MILESTONE OVERVIEW ============ */}
+          <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-[#e8e8ef] font-semibold text-base">Milestone Overview</h2>
+                <p className="text-[#7a7a8e] text-xs mt-0.5">View all approved claims grouped by milestone across all workers</p>
+              </div>
+            </div>
+
+            {/* Milestone selector buttons */}
+            <div className="flex flex-wrap gap-2 mb-5">
+              {[
+                { key: "milestone1", label: "Milestone 1", color: "#a78bfa", bg: "rgba(167,139,250,0.08)", border: "rgba(167,139,250,0.3)" },
+                { key: "milestone2", label: "Milestone 2", color: "#34d399", bg: "rgba(52,211,153,0.08)", border: "rgba(52,211,153,0.3)" },
+                { key: "milestone3", label: "Milestone 3", color: "#fbbf24", bg: "rgba(251,191,36,0.08)", border: "rgba(251,191,36,0.3)" },
+                { key: "milestone4", label: "Milestone 4", color: "#f87171", bg: "rgba(248,113,113,0.08)", border: "rgba(248,113,113,0.3)" },
+              ].map(({ key, label, color, bg, border }) => {
+                const count = workersWithClaims.reduce(
+                  (acc, w) => acc + w.claims.filter((c) => c.milestone === key && c.status === "approved").length,
+                  0
+                )
+                const isActive = milestoneFilter === key
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setMilestoneFilter(isActive ? null : key)}
+                    style={isActive ? { backgroundColor: bg, borderColor: border, color } : {}}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${
+                      isActive
+                        ? "shadow-sm"
+                        : "bg-[#12121c] border-[#1a1a2e] text-[#7a7a8e] hover:text-[#e8e8ef] hover:border-[#2a2a3e]"
+                    }`}
+                  >
+                    {label}
+                    <span
+                      style={isActive ? { backgroundColor: border, color } : {}}
+                      className={`text-xs rounded-full px-1.5 py-0.5 leading-none font-semibold ${
+                        isActive ? "" : "bg-[#1a1a2e] text-[#7a7a8e]"
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                )
+              })}
+              {milestoneFilter && (
+                <button
+                  onClick={() => setMilestoneFilter(null)}
+                  className="px-4 py-2 rounded-xl border border-[#1a1a2e] text-[#7a7a8e] hover:text-[#e8e8ef] text-sm transition-all bg-[#12121c]"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+
+            {/* Milestone results */}
+            {milestoneFilter ? (() => {
+              const rows: Array<{ workerUsername: string; displayName: string; claim: Claim }> = []
+              workersWithClaims.forEach((w) => {
+                w.claims
+                  .filter((c) => c.milestone === milestoneFilter && c.status === "approved")
+                  .forEach((c) => rows.push({ workerUsername: w.username, displayName: w.data.displayName, claim: c }))
+              })
+              rows.sort((a, b) => b.claim.submittedAt - a.claim.submittedAt)
+
+              if (rows.length === 0) {
+                return (
+                  <div className="py-8 text-center">
+                    <p className="text-[#7a7a8e] text-sm">No approved claims for this milestone yet.</p>
+                  </div>
+                )
+              }
+
+              return (
+                <div className="flex flex-col gap-2">
+                  <p className="text-[#7a7a8e] text-xs mb-1">{rows.length} approved claim{rows.length !== 1 ? "s" : ""}</p>
+                  {rows.map(({ workerUsername, displayName, claim }) => (
+                    <div
+                      key={claim.id}
+                      className="bg-[#12121c] border border-[#1a1a2e] rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-8 h-8 rounded-full bg-[#1a1a2e] flex items-center justify-center text-[#00e5ff] text-sm font-bold shrink-0">
+                          {(displayName || workerUsername)[0].toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[#e8e8ef] text-sm font-medium">
+                            {displayName} <span className="text-[#7a7a8e] font-normal">@{workerUsername}</span>
+                          </p>
+                          <p className="text-[#7a7a8e] text-xs">
+                            @{claim.profileUsername}
+                            <span className="mx-1 text-[#3a3a5e]">·</span>
+                            {claim.platform}
+                            <span className="mx-1 text-[#3a3a5e]">·</span>
+                            {claim.milestoneLabel}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 shrink-0">
+                        <span className="text-[#00e5ff] font-bold text-sm">${claim.reward}</span>
+                        <span className="text-[#3a3a5e] text-xs">{new Date(claim.submittedAt).toLocaleDateString()}</span>
+                        <span className="bg-[#00e5ff]/10 text-[#00e5ff] border border-[#00e5ff]/30 text-xs rounded-full px-2 py-0.5">Approved</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            })() : (
+              <div className="py-6 text-center">
+                <p className="text-[#7a7a8e] text-sm">Select a milestone above to see all approved claims for it.</p>
               </div>
             )}
           </div>
