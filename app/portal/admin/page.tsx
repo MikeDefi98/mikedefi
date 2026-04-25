@@ -672,7 +672,7 @@ export default function AdminPanel() {
 
           {/* Add Worker */}
           <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-6">
-            <h2 className="text-[#e8e8ef] font-semibold text-base mb-4">Register New Worker. (Admin)</h2>
+            <h2 className="text-[#e8e8ef] font-semibold text-base mb-4">Register New Worker (Admin)</h2>
             <p className="text-[#7a7a8e] text-xs mb-4">Workers added here are auto-approved. They will need to set their password on first login.</p>
             <form onSubmit={addWorker} className="flex flex-col sm:flex-row gap-4">
               <div className="flex flex-col gap-1 flex-1">
