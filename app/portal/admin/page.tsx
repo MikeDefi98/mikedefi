@@ -560,9 +560,8 @@ export default function AdminPanel() {
             </button>
             <button
               onClick={() => setAdminTab("contacts")}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2 ${
-                adminTab === "contacts" ? "bg-[#1a1a2e] text-[#e8e8ef]" : "text-[#7a7a8e] hover:text-[#e8e8ef]"
-              }`}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2 ${adminTab === "contacts" ? "bg-[#1a1a2e] text-[#e8e8ef]" : "text-[#7a7a8e] hover:text-[#e8e8ef]"
+                }`}
             >
               Contacts
               {Object.keys(allContacts).length > 0 && (
@@ -673,7 +672,7 @@ export default function AdminPanel() {
 
           {/* Add Worker */}
           <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl p-6">
-            <h2 className="text-[#e8e8ef] font-semibold text-base mb-4">Register New Worker (Admin)</h2>
+            <h2 className="text-[#e8e8ef] font-semibold text-base mb-4">Register New Worker. (Admin)</h2>
             <p className="text-[#7a7a8e] text-xs mb-4">Workers added here are auto-approved. They will need to set their password on first login.</p>
             <form onSubmit={addWorker} className="flex flex-col sm:flex-row gap-4">
               <div className="flex flex-col gap-1 flex-1">
@@ -769,18 +768,16 @@ export default function AdminPanel() {
                         key={key}
                         onClick={() => setMilestoneFilter(isActive ? null : key)}
                         style={isActive ? { backgroundColor: bg, borderColor: border, color } : {}}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${
-                          isActive
-                            ? "shadow-sm"
-                            : "bg-[#12121c] border-[#1a1a2e] text-[#7a7a8e] hover:text-[#e8e8ef] hover:border-[#2a2a3e]"
-                        }`}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${isActive
+                          ? "shadow-sm"
+                          : "bg-[#12121c] border-[#1a1a2e] text-[#7a7a8e] hover:text-[#e8e8ef] hover:border-[#2a2a3e]"
+                          }`}
                       >
                         {label}
                         <span
                           style={isActive ? { backgroundColor: border, color } : {}}
-                          className={`text-xs rounded-full px-1.5 py-0.5 leading-none font-semibold ${
-                            isActive ? "" : "bg-[#1a1a2e] text-[#7a7a8e]"
-                          }`}
+                          className={`text-xs rounded-full px-1.5 py-0.5 leading-none font-semibold ${isActive ? "" : "bg-[#1a1a2e] text-[#7a7a8e]"
+                            }`}
                         >
                           {count}
                         </span>
@@ -836,7 +833,7 @@ export default function AdminPanel() {
                                 <span className="text-[#7a7a8e] text-xs border border-[#1a1a2e] rounded-full px-2 py-0.5">{claim.platform}</span>
                               </div>
                             </div>
-                            
+
                             <div className="pl-11 flex flex-col gap-1.5 mt-1">
                               {claim.description && (
                                 <ExpandableNote text={claim.description} />
@@ -878,7 +875,7 @@ export default function AdminPanel() {
                               <p className="text-[#3a3a5e] text-xs mt-1">{new Date(claim.submittedAt).toLocaleString()}</p>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center gap-3 shrink-0 self-end sm:self-start">
                             <span className="text-[#00e5ff] font-bold text-sm">${claim.reward}</span>
                             <span className="bg-[#00e5ff]/10 text-[#00e5ff] border border-[#00e5ff]/30 text-xs rounded-full px-2 py-0.5">Approved</span>
