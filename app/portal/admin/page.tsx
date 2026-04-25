@@ -24,6 +24,8 @@ interface Claim {
 interface WorkerData {
   displayName: string
   baseSalary: number
+  milestone1?: number
+  milestone2?: number
   approvedBonuses: number
   sessionToken?: string
   passwordHash?: string
@@ -139,8 +141,10 @@ export default function AdminPanel() {
   const [reportsDateFilter, setReportsDateFilter] = useState<string>("")
   const [reportsSortBy, setReportsSortBy] = useState<"name" | "count" | "newest">("newest")
 
-  // Pending user salary adjustments
+  // Pending user salary and milestone adjustments
   const [pendingSalaries, setPendingSalaries] = useState<Record<string, number>>({})
+  const [pendingMilestone1, setPendingMilestone1] = useState<Record<string, number>>({})
+  const [pendingMilestone2, setPendingMilestone2] = useState<Record<string, number>>({})
 
   // Screenshot viewer modal
   const [viewingScreenshots, setViewingScreenshots] = useState<string[] | null>(null)
@@ -265,7 +269,9 @@ export default function AdminPanel() {
 
     await set(ref(db, `workers/${uname}`), {
       displayName: newDisplayName.trim(),
-      baseSalary: 200,
+      baseSalary: 400,
+      milestone1: 30,
+      milestone2: 20,
       approvedBonuses: 0,
       status: "approved", // Admin-created workers are auto-approved
       createdAt: Date.now(),
@@ -283,10 +289,20 @@ export default function AdminPanel() {
     if (selectedWorker === username) setSelectedWorker(null)
   }
 
-  async function approveWorker(username: string, baseSalary: number) {
-    await update(ref(db, `workers/${username}`), { status: "approved", baseSalary })
-    // Clear the pending salary state for this user
+  async function approveWorker(username: string, baseSalary: number, milestone1: number = 30, milestone2: number = 20) {
+    await update(ref(db, `workers/${username}`), { status: "approved", baseSalary, milestone1, milestone2 })
+    // Clear the pending configuration state for this user
     setPendingSalaries((prev) => {
+      const next = { ...prev }
+      delete next[username]
+      return next
+    })
+    setPendingMilestone1((prev) => {
+      const next = { ...prev }
+      delete next[username]
+      return next
+    })
+    setPendingMilestone2((prev) => {
       const next = { ...prev }
       delete next[username]
       return next
@@ -615,7 +631,9 @@ export default function AdminPanel() {
               </div>
               <div className="flex flex-col gap-3">
                 {pendingWorkers.map((worker) => {
-                  const salary = pendingSalaries[worker.username] ?? worker.data.baseSalary ?? 200
+                  const salary = pendingSalaries[worker.username] ?? worker.data.baseSalary ?? 400
+                  const m1 = pendingMilestone1[worker.username] ?? worker.data.milestone1 ?? 30
+                  const m2 = pendingMilestone2[worker.username] ?? worker.data.milestone2 ?? 20
                   return (
                     <div
                       key={worker.username}
@@ -638,19 +656,47 @@ export default function AdminPanel() {
                           <div className="flex items-center gap-2">
                             <label className="text-[#7a7a8e] text-xs whitespace-nowrap">Base Salary:</label>
                             <div className="relative">
-                              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#7a7a8e] text-xs">$</span>
+                              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[#7a7a8e] text-xs">$</span>
                               <input
                                 type="number"
                                 value={salary}
                                 onChange={(e) => setPendingSalaries((prev) => ({ ...prev, [worker.username]: Number(e.target.value) }))}
                                 onClick={(e) => e.stopPropagation()}
-                                className="w-20 bg-[#12121c] border border-[#1a1a2e] rounded-lg pl-6 pr-2 py-1.5 text-[#e8e8ef] text-xs outline-none focus:border-[#00e5ff] transition-all"
+                                className="w-16 bg-[#12121c] border border-[#1a1a2e] rounded-lg pl-5 pr-1 py-1.5 text-[#e8e8ef] text-xs outline-none focus:border-[#00e5ff] transition-all"
+                                min={0}
+                              />
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <label className="text-[#7a7a8e] text-xs whitespace-nowrap">M1:</label>
+                            <div className="relative">
+                              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[#7a7a8e] text-xs">$</span>
+                              <input
+                                type="number"
+                                value={m1}
+                                onChange={(e) => setPendingMilestone1((prev) => ({ ...prev, [worker.username]: Number(e.target.value) }))}
+                                onClick={(e) => e.stopPropagation()}
+                                className="w-14 bg-[#12121c] border border-[#1a1a2e] rounded-lg pl-5 pr-1 py-1.5 text-[#e8e8ef] text-xs outline-none focus:border-[#00e5ff] transition-all"
+                                min={0}
+                              />
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <label className="text-[#7a7a8e] text-xs whitespace-nowrap">M2:</label>
+                            <div className="relative">
+                              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[#7a7a8e] text-xs">$</span>
+                              <input
+                                type="number"
+                                value={m2}
+                                onChange={(e) => setPendingMilestone2((prev) => ({ ...prev, [worker.username]: Number(e.target.value) }))}
+                                onClick={(e) => e.stopPropagation()}
+                                className="w-14 bg-[#12121c] border border-[#1a1a2e] rounded-lg pl-5 pr-1 py-1.5 text-[#e8e8ef] text-xs outline-none focus:border-[#00e5ff] transition-all"
                                 min={0}
                               />
                             </div>
                           </div>
                           <button
-                            onClick={() => approveWorker(worker.username, salary)}
+                            onClick={() => approveWorker(worker.username, salary, m1, m2)}
                             className="bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 text-[#00e5ff] border border-[#00e5ff]/30 rounded-lg px-4 py-1.5 text-xs font-medium transition-all"
                           >
                             Approve
@@ -944,13 +990,13 @@ export default function AdminPanel() {
                           )}
                           {!isPendingUser && (
                             <span className="text-[#00e5ff] text-sm font-bold">
-                              ${(worker.data.baseSalary ?? 200) + (worker.data.approvedBonuses ?? 0)}
+                              ${(worker.data.baseSalary ?? 400) + (worker.data.approvedBonuses ?? 0)}
                             </span>
                           )}
                           {isPendingUser ? (
                             <div className="flex gap-2">
                               <button
-                                onClick={(e) => { e.stopPropagation(); approveWorker(worker.username, worker.data.baseSalary ?? 200) }}
+                                onClick={(e) => { e.stopPropagation(); approveWorker(worker.username, worker.data.baseSalary ?? 400, worker.data.milestone1 ?? 30, worker.data.milestone2 ?? 20) }}
                                 className="bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 text-[#00e5ff] border border-[#00e5ff]/30 rounded-lg px-3 py-1.5 text-xs font-medium transition-all"
                               >
                                 Approve
