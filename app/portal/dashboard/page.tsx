@@ -8,13 +8,6 @@ import { hashPassword, verifyPassword, generateToken } from "@/lib/auth"
 
 const PLATFORMS = ["Instagram", "TikTok", "X (Twitter)", "Discord", "Facebook"]
 
-const MILESTONES = [
-  { id: "m1", label: "Milestone 1: The Foundation", reward: 10 },
-  { id: "m2", label: "Milestone 2: Lead Transfer", reward: 20 },
-  { id: "m3", label: "Milestone 3: The Demo Test", reward: 50 },
-  { id: "m4", label: "Milestone 4: The Conversion", reward: 100 },
-]
-
 const WITHDRAW_METHODS = ["PayPal", "Wise", "Skrill", "Bank Transfer"]
 
 interface Claim {
@@ -33,6 +26,8 @@ interface Claim {
 interface WorkerData {
   displayName: string
   baseSalary: number
+  milestone1?: number
+  milestone2?: number
   approvedBonuses: number
   sessionToken?: string
   passwordHash?: string
@@ -45,6 +40,14 @@ export default function PortalDashboard() {
   // Decode Firebase key (commas) back to display form (dots)
   const displayUsername = username ? username.replace(/,/g, ".") : null
   const [worker, setWorker] = useState<WorkerData | null>(null)
+
+  const MILESTONES = [
+    { id: "m1", label: "Milestone 1: The Foundation", reward: worker?.milestone1 ?? 30 },
+    { id: "m2", label: "Milestone 2: Lead Transfer", reward: worker?.milestone2 ?? 20 },
+    { id: "m3", label: "Milestone 3: The Demo Test", reward: 50 },
+    { id: "m4", label: "Milestone 4: The Conversion", reward: 100 },
+  ]
+
   const [claims, setClaims] = useState<Claim[]>([])
   const [authChecked, setAuthChecked] = useState(false)
   const [loading, setLoading] = useState(true)
