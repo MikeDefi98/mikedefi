@@ -74,11 +74,18 @@ interface AllReports {
   [workerUsername: string]: WorkerReports
 }
 
+interface DailyNote {
+  day: string
+  summary: string
+}
+
 interface ContactData {
-  createdAt: string
-  details: string
+  createdAt: number
+  basicInfo: string
+  name: string
+  dailyNotes?: DailyNote[]
   platform: string
-  updatedAt: string
+  updatedAt: number
   username: string
 }
 
@@ -1670,17 +1677,36 @@ function ContactWorkerTree({
               <div key={contactUsername} className="bg-[#12121c] border border-[#1a1a2e] hover:border-[#2a2a3e] transition-colors rounded-xl p-4 flex flex-col">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <p className="text-[#e8e8ef] font-medium text-sm">@{contact.username}</p>
+                    <p className="text-[#e8e8ef] font-medium text-sm">
+                      @{contact.username}
+                      {contact.name && <span className="text-[#7a7a8e] font-normal ml-1">({contact.name})</span>}
+                    </p>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-[10px] uppercase tracking-wider font-semibold border border-[#1a1a2e] bg-[#0c0c14] px-2 py-0.5 rounded-md text-[#00e5ff]">{contact.platform}</span>
                     </div>
                   </div>
                 </div>
-                <div className="text-[#7a7a8e] text-xs flex-1">
-                  {contact.details ? (
-                    <p className="mt-2 bg-[#0c0c14] p-3 rounded-lg border border-[#1a1a2e] text-[#b4b4c8] break-words whitespace-pre-wrap">{contact.details}</p>
-                  ) : (
-                    <p className="mt-2 italic">No details provided.</p>
+                <div className="text-[#7a7a8e] text-xs flex-1 flex flex-col gap-2 mt-2">
+                  {contact.basicInfo && (
+                    <div className="bg-[#0c0c14] p-3 rounded-lg border border-[#1a1a2e]">
+                      <span className="text-[#e8e8ef] font-semibold mb-1 block">Basic Info:</span>
+                      <p className="text-[#b4b4c8] break-words whitespace-pre-wrap">{contact.basicInfo}</p>
+                    </div>
+                  )}
+                  {(!contact.basicInfo && (!contact.dailyNotes || contact.dailyNotes.length === 0)) && (
+                    <p className="italic mt-1">No details provided.</p>
+                  )}
+                  {contact.dailyNotes && contact.dailyNotes.length > 0 && (
+                    <div className="bg-[#0c0c14] p-3 rounded-lg border border-[#1a1a2e]">
+                      <span className="text-[#e8e8ef] font-semibold mb-1 block">Daily Notes:</span>
+                      <ul className="list-disc pl-4 space-y-1">
+                        {contact.dailyNotes.map((note, idx) => (
+                          <li key={idx} className="text-[#b4b4c8]">
+                            <strong className="text-[#e8e8ef]">Day {note.day}:</strong> {note.summary}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
                 </div>
                 <div className="flex justify-between items-center mt-4 pt-3 border-t border-[#1a1a2e]">
