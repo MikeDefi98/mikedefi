@@ -122,7 +122,7 @@ export function HeroSection() {
               style={{ animationDelay: "0.6s" }}
             >
               Transforming businesses through cutting-edge web development, innovative DeFi
-              solutions, and complex auto-trading bots for the crypto industry. From concept
+              solutions, and complex auto-trading quantitative algorithms  for the finance & web3 industry. From concept
               to deployment, we engineer the impossible.
             </p>
 
