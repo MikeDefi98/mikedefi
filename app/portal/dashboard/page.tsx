@@ -42,7 +42,7 @@ export default function PortalDashboard() {
   const [worker, setWorker] = useState<WorkerData | null>(null)
 
   const MILESTONES = [
-    { id: "m1", label: "Milestone 1: The Foundation", reward: worker?.milestone1 ?? 30 },
+    { id: "m1", label: "Milestone 1: The Foundation", reward: worker?.milestone1 ?? 10 },
     { id: "m2", label: "Milestone 2: Lead Transfer", reward: worker?.milestone2 ?? 20 },
     { id: "m3", label: "Milestone 3: The Demo Test", reward: 50 },
     { id: "m4", label: "Milestone 4: The Conversion", reward: 100 },
