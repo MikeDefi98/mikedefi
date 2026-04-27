@@ -1292,6 +1292,11 @@ export default function AdminPanel() {
               ) : (
                 Object.entries(allContacts)
                   .filter(([workerUsername]) => contactsSearch === "" || workerUsername.toLowerCase().includes(contactsSearch.toLowerCase()))
+                  .sort(([, contactsA], [, contactsB]) => {
+                    const maxA = Math.max(0, ...Object.values(contactsA).map(c => c.updatedAt || 0))
+                    const maxB = Math.max(0, ...Object.values(contactsB).map(c => c.updatedAt || 0))
+                    return maxB - maxA
+                  })
                   .map(([workerUsername, workerContacts]) => (
                     <ContactWorkerTree
                       key={workerUsername}
@@ -1680,7 +1685,20 @@ function ContactWorkerTree({
   workerContacts: WorkerContacts
 }) {
   const [open, setOpen] = useState(false)
-  const contactEntries = Object.entries(workerContacts)
+  const contactEntries = Object.entries(workerContacts).sort(([, a], [, b]) => {
+    return (b.updatedAt || 0) - (a.updatedAt || 0)
+  })
+
+  async function handleDeleteContact(contactUsername: string, e: React.MouseEvent) {
+    e.stopPropagation()
+    if (!confirm(`Are you sure you want to delete the contact @${contactUsername}?`)) return
+    try {
+      await remove(ref(reportsDb, `contacts/${workerUsername}/${contactUsername}`))
+    } catch (err) {
+      console.error("Failed to delete contact:", err)
+      alert("Failed to delete contact. Please try again.")
+    }
+  }
 
   return (
     <div className="bg-[#0c0c14] border border-[#1a1a2e] rounded-2xl overflow-hidden transition-all hover:border-[#2a2a3e]">
@@ -1728,6 +1746,18 @@ function ContactWorkerTree({
                       <span className="text-[10px] uppercase tracking-wider font-semibold border border-[#1a1a2e] bg-[#0c0c14] px-2 py-0.5 rounded-md text-[#00e5ff]">{contact.platform}</span>
                     </div>
                   </div>
+                  <button
+                    onClick={(e) => handleDeleteContact(contactUsername, e)}
+                    className="text-[#e63946] hover:text-red-400 border border-[#e63946]/20 rounded-lg p-1.5 transition-colors shrink-0"
+                    title="Delete Contact"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6l-1 14H6L5 6" />
+                      <path d="M10 11v6M14 11v6" />
+                      <path d="M9 6V4h6v2" />
+                    </svg>
+                  </button>
                 </div>
                 <div className="text-[#7a7a8e] text-xs flex-1 flex flex-col gap-2 mt-2">
                   {contact.basicInfo && (
